@@ -1,7 +1,32 @@
 Util = {
-    is_login: true,
+    is_login: false,
     init_info: {},
     accountInfo: null,
+    alert: function(content,type) {
+        var html = '<div>'+
+            '<div class="hover"></div>'+
+            '<div class="content">'+
+                '<div class="center">'+
+                    '<div>'+
+                        '<span class="glyphicon glyphicon-ok-circle"></span>'+
+                    '</div>'+
+                    '<p>'+content+'</p>'+
+                '</div>'+
+            '</div>'+
+            '</div>';
+
+        $('#alert').append(html);
+
+        setTimeout(function(){
+            $('#alert').html('');
+        },2000);
+    },
+    slideAlert: function(content) {
+        var html = '<div class="slideAlert">' + content
+            '</div>';
+
+        $('#alert').append(html);
+    },
     setHeight: function(type) {
         var curHeight = height;
 
@@ -64,7 +89,6 @@ Util = {
     showError: function(node, text) {
         $(node).after('<span class="error_info">'+text+'</span>');
     },
-
     getAccountInfo: function(callback) {
         if(this.accountInfo) {
             return callback(this.accountInfo);
@@ -138,113 +162,7 @@ Util = {
         event.preventDefault();
         event.stopPropagation();
     },
-    removeHintInfo: function() {
-        this.hoverHide();
-        $('#hint_info_wrp').off('click').remove();
-    },
-    //显示loading
-    showLoading: function(obj) {
-
-        obj.children().hide();
-
-        if(obj.children('.loading_large').length === 0) {
-            obj.append('<div class="loading_large"></div>');
-        } else {
-            obj.children('.loading_large').show();
-        }
-    },
-    //隐藏loading
-    hideLoading: function(obj) {
-        obj.children().show();
-        obj.children('.loading_large').hide();
-    },
-    //遮罩层
-    hoverShow: function(type) {
-        if(type == 2) {
-            $('#common-hover-two').show();
-            return false;
-        }
-        $('#common-hover').show();
-    },
-    hoverHide: function(type) {
-        if(type == 2) {
-            $('#common-hover-two').hide();
-            return false;
-        }
-        $('#common-hover').hide();
-    },
-    //选择框信息
-    chooseHtml: function(info) {
-        var html = '<div id="hint_info_wrp">' +
-                '<div class="include">' +
-                    '<h2>' +
-                        '<span data-type="close" class="close hint_info_submit glyphicon glyphicon-remove"></span>' +
-                    '</h2>' +
-                    '<div class="content">' +
-                        '<div class="choose_p">'+info+'</div>' +
-                    '</div>' +
-                    '<div class="operate_btn">' +
-                        '<button data-type="confirm" class="true hint_info_submit">确定</button>' +
-                        '<button data-type="cancel" class="cancel hint_info_submit">取消</button>'+
-                    '</div>' +
-                '</div>' +
-            '</div>';
-        return html;
-    },
-    //提示框信息
-    infoHtml: function(info) {
-        var html = '<div id="hint_info_wrp">' +
-            '<div class="include_alert">' +
-                '<h2>' +
-                    '<span data-type="close" class="close hint_info_submit glyphicon glyphicon-remove"></span>' +
-                '</h2>' +
-                '<div class="content">' +
-                    '<div class="hint_p">'+info+'</div>' +
-                '</div>' +
-                '<div class="operate_btn">' +
-                    '<button data-type="confirm" class="true hint_info_submit">确定</button>' +
-                '</div>' +
-            '</div>' +
-            '</div>';
-        return html;
-    },
-    //弹出框
-    hintInfo: function(callback) {
-
-        if($('#hint_info_wrp').length != 0) {
-            this.removeHintInfo();
-        }
-
-        var _this = this, html;
-
-        html = this[callback.type == 'choose' ? 'chooseHtml' : 'infoHtml'](callback.info);
-
-        this.hoverShow();
-
-        $('body').append(html);
-
-        var children = $('#hint_info_wrp').children('div').eq(0);
-
-        children.css('margin-top', -children.innerHeight()/2);
-
-        $('#hint_info_wrp').on('click', '.hint_info_submit', function() {
-
-            var oThis = $(this);
-            var curType = oThis.data('type');
-
-            if(((curType == 'close' && callback.type == 'allow') || curType == 'confirm') && callback.success) {
-                callback.success();
-            }
-
-            if(callback.close == 'no' &&  curType == 'confirm') {
-                return false;
-            }
-            _this.removeHintInfo();
-        })
-    },
     ajax: function(callback) {
-        var _this = this;
-
         $.ajax({
             data : callback.data,
             type : 'get',
@@ -256,41 +174,24 @@ Util = {
                 withCredentials: typeof callback.cookie == 'undefined' ? false : callback.cookie
             },
             success : function(data){
-                if(data['error_code']) {
-                    return this.error(data);
-                }
-                if(typeof callback.success != 'undefined'){
-                    return callback.success(data);
-                }
-                return this.error(data);
+                return callback.success && callback.success(data);
             },
             error: function(data) {
 
-                if(!_this.is_login) {
-                    return false;
+                var errorData = data.responseJSON || (data.responseText && JSON.parse(data.responseText)) || data;
+
+                if(!errorData){
+                    return callback.error(errorData);
                 }
 
-                var errorData = data.responseJSON ? data.responseJSON : data;
-                if(errorData){
-                    var error_code = errorData['error_code'];
-
-                    if(error_code == '120106') {
-                        _this.is_login = false;
-                    }
-
-                    _this.hintInfo({
-                        type: 'allow',
-                        info: errorData['error_msg'],
-                        success: function() {
-                            //if(error_code == '120106') {
-                            //    window.location.href = '/passport/login';
-                            //    return '';
-                            //}
-                            return callback.error(data);
-                        }
-                    });
+                if(errorData['error_code'] == 30000) {
+                    window.location.href = '/#login';
+                    return '';
                 }
-                return callback.error(data);
+
+                alert(errorData['error_msg']);
+
+                return callback.error(errorData);
             }
         });
     }

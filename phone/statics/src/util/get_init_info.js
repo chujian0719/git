@@ -1,7 +1,5 @@
-Util_Person.ajax({
-    url: Api['b2c']['init_info'],
-    success: function(data) {
-        Util_Person.init_info = data.response_data;
-    },
-    error: function(data) {}
-});
+var storage = window.sessionStorage;
+
+storage && storage.removeItem('cart_count');
+storage && storage.removeItem('user_name');
+storage && storage.removeItem('position');

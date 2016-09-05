@@ -12,7 +12,7 @@ db.sql = function (sql, callBack) {
     pool.getConnection(function(err, connection){
         connection.query(sql, function(err, rows, fields) {
             if (err) throw err;
-            callBack(rows);
+            callBack(rows, err);
             connection.release();
         });
     });

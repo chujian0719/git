@@ -30,19 +30,19 @@ var config = {
 		publicPath:"./build/"
     },
     plugins: [
-        //new webpack.optimize.UglifyJsPlugin({
-        //    output: {
-        //        comments: false  // remove all comments
-        //    },
-        //    compress: {
-        //        warnings: false
-        //    }
-        //}),
-        //new webpack.DefinePlugin({
-        //    "process.env": {
-        //        NODE_ENV: JSON.stringify("production")
-        //    }
-        //})
+        new webpack.optimize.UglifyJsPlugin({
+            output: {
+                comments: false  // remove all comments
+            },
+            compress: {
+                warnings: false
+            }
+        }),
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        })
     ],
     module: {
         noParse: [],

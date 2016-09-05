@@ -1,9 +1,12 @@
 import React from 'react'
-import Header from './Header'
-import Footer from './Footer'
+
+import Header from './common/Header'
+import Footer from './common/Footer'
 
 import ReactIScroll from 'react-iscroll'
 var iScroll = require('iscroll');
+
+import Util from './common/Util'
 
 export default React.createClass({
 	getInitialState: function () {
@@ -18,6 +21,8 @@ export default React.createClass({
 		}
 	},
 	componentDidMount: function() {
+		this.props.changeFooterShowStatus();
+
 		Util.setHeight();
 	},
 	getDefaultProps: function() {
@@ -50,7 +55,6 @@ export default React.createClass({
 						</ul>
 					</div>
 				</ReactIScroll>
-				<Footer />
 			</div>
 		)
 	}

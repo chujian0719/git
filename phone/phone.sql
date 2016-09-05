@@ -11,7 +11,7 @@
  Target Server Version : 50711
  File Encoding         : utf-8
 
- Date: 08/08/2016 13:31:08 PM
+ Date: 09/01/2016 01:39:03 AM
 */
 
 SET NAMES utf8;
@@ -36,13 +36,13 @@ CREATE TABLE `address` (
   `is_default` tinyint(1) NOT NULL DEFAULT '0',
   `code` varchar(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `address`
 -- ----------------------------
 BEGIN;
-INSERT INTO `address` VALUES ('1', '1', '杨栋', '13269107674', '100000', '北京市', '101400', '朝阳区', null, null, '京旺家园一区', '0', null), ('2', '1', '杨栋', '12345678901', '100000', '北京市', '101400', '朝阳区', null, null, '望京soho', '1', null), ('3', '1', '杨栋', '123456', '110000', '上海市', '110200', '奉贤区', null, null, '这是地址', '0', '123456'), ('4', '1', 'nishishui', '13269107674', '120000', '天津市', '120300', '宁河县', null, null, 'haha', '0', '123');
+INSERT INTO `address` VALUES ('1', '1', '杨栋', '13269107674', '100000', '北京市', '101400', '朝阳区', null, null, '京旺家园一区', '0', null), ('2', '1', '杨栋', '12345678901', '100000', '北京市', '101400', '朝阳区', null, null, '望京soho', '1', null), ('3', '1', '杨栋', '123456', '110000', '上海市', '110200', '奉贤区', null, null, '这是地址', '0', '123456'), ('4', '1', 'nishishui', '13269107674', '120000', '天津市', '120300', '宁河县', null, null, 'haha', '0', '123'), ('5', '10', '1234', '1234', '130000', '重庆市', '130400', '石柱土家族自治县', null, null, '1234', '0', '1234');
 COMMIT;
 
 -- ----------------------------
@@ -76,17 +76,32 @@ DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) NOT NULL,
-  `seller_id` int(10) NOT NULL DEFAULT '1',
   `goods_id` int(10) NOT NULL,
-  `count` int(3) NOT NULL,
+  `goods_sort` varchar(30) NOT NULL,
+  `goods_num` int(3) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
---  Records of `cart`
+--  Table structure for `goods_comment`
+-- ----------------------------
+DROP TABLE IF EXISTS `goods_comment`;
+CREATE TABLE `goods_comment` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `goods_id` int(10) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `user_name` varchar(10) DEFAULT NULL,
+  `content` varchar(50) DEFAULT NULL,
+  `score` float(6,2) NOT NULL,
+  `date` bigint(13) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `goods_comment`
 -- ----------------------------
 BEGIN;
-INSERT INTO `cart` VALUES ('1', '1', '1', '2', '12'), ('4', '1', '1', '3', '7'), ('5', '1', '1', '1', '1');
+INSERT INTO `goods_comment` VALUES ('1', '1', '10', '123456', '这件商品哈哈哈非常棒', '3.20', '1470937086957');
 COMMIT;
 
 -- ----------------------------
@@ -96,23 +111,25 @@ DROP TABLE IF EXISTS `goods_list`;
 CREATE TABLE `goods_list` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `seller_id` int(10) NOT NULL,
-  `seller_name` varchar(200) DEFAULT NULL,
-  `title` varchar(500) NOT NULL,
+  `seller_name` varchar(30) DEFAULT NULL,
+  `title` varchar(50) NOT NULL,
   `price` double(10,2) NOT NULL,
   `comment_num` int(10) DEFAULT NULL,
   `comment_percent` float(5,2) DEFAULT NULL,
+  `thumb` varchar(50) DEFAULT NULL,
   `images` varchar(500) DEFAULT NULL,
-  `coupon` float(5,0) DEFAULT NULL,
+  `sort_id` int(10) NOT NULL,
+  `goods_sort` varchar(500) DEFAULT NULL,
   `surplus` int(10) DEFAULT NULL,
   `support` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Records of `goods_list`
 -- ----------------------------
 BEGIN;
-INSERT INTO `goods_list` VALUES ('1', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '10', '100', '1，2，3'), ('2', '1', 'haha', '这是第二件商品', '100.00', '20', '10.00', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '8', '200', '1，2，3'), ('3', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '6', '99', '1，2，3');
+INSERT INTO `goods_list` VALUES ('1', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', 'images/sort_phone/1.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('2', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', 'images/sort_phone/2.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('3', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', 'images/sort_phone/3.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('4', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', 'images/sort_phone/4.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('5', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', 'images/sort_phone/5.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('6', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', 'images/sort_phone/6.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('7', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', 'images/sort_phone/7.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('8', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', 'images/sort_phone/8.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('9', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', 'images/sort_phone/9.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('10', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', 'images/sort_phone/10.jpg', 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '46', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('11', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '43', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('12', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '44', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('14', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '42', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('15', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '43', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('16', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '44', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('17', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '42', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('18', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '43', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('19', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '44', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('20', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '42', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('21', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '43', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('22', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '44', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3'), ('23', '1', 'haha', '这是一件商品', '22.22', '100', '20.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '42', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '100', '1，2，3'), ('24', '2', '安利旗舰店', '这是第二件商品', '100.00', '20', '10.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '43', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '200', '1，2，3'), ('25', '1', 'haha', '这是第三件商品', '50.00', '10', '12.00', null, 'images/goods_detail.jpg,images/goods_detail.jpg,images/goods_detail.jpg', '44', '金色,蓝色,白色,灰色,红色,银色,玫瑰金', '99', '1，2，3');
 COMMIT;
 
 -- ----------------------------
@@ -140,7 +157,7 @@ DROP TABLE IF EXISTS `notice`;
 CREATE TABLE `notice` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) NOT NULL,
-  `type` int(2) NOT NULL,
+  `type` int(1) NOT NULL,
   `goods_id` int(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
@@ -149,8 +166,18 @@ CREATE TABLE `notice` (
 --  Records of `notice`
 -- ----------------------------
 BEGIN;
-INSERT INTO `notice` VALUES ('1', '七夕大酬宾你是最好的', '1', '2'), ('2', '哈哈哈大甩卖', '2', '1'), ('3', '12345678', '1', '3'), ('4', '87654321', '1', '2');
+INSERT INTO `notice` VALUES ('1', '七夕大酬宾你是最好的', '1', '2'), ('2', '哈哈哈大甩卖哈哈哈大甩卖', '2', '1'), ('3', '听说这事你听说了么我没有听说', '1', '3'), ('4', '如果这都不算唉还有什么能回来', '1', '2');
 COMMIT;
+
+-- ----------------------------
+--  Table structure for `seller`
+-- ----------------------------
+DROP TABLE IF EXISTS `seller`;
+CREATE TABLE `seller` (
+  `seller_id` int(10) NOT NULL AUTO_INCREMENT,
+  `seller_name` varchar(10) NOT NULL,
+  PRIMARY KEY (`seller_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 --  Table structure for `sort`
@@ -169,7 +196,7 @@ CREATE TABLE `sort` (
 --  Records of `sort`
 -- ----------------------------
 BEGIN;
-INSERT INTO `sort` VALUES ('1', '0', '推荐分类', '1', null), ('2', '0', '潮流女装', '1', null), ('3', '0', '品牌男装', '1', null), ('4', '0', '家用电器', '1', null), ('5', '0', '电脑办公', '1', null), ('6', '0', '手机数码', '1', null), ('7', '0', '图书', '1', null), ('8', '0', '家居家纺', '1', null), ('9', '0', '食品生鲜', '1', null), ('10', '0', '酒水饮料', '1', null), ('11', '0', '运动户外', '1', null), ('12', '0', '奢侈箱包', '1', null), ('13', '0', '钟表珠宝', '1', null), ('14', '0', '玩具乐器', '1', null), ('15', '0', '汽车用品', '1', null), ('16', '0', '音像制品', '1', null), ('17', '2', '裙装', '2', null), ('18', '2', '上装', '2', null), ('19', '2', '下装', '2', null), ('20', '2', '特色类目', '2', null), ('21', '3', '上装', '2', null), ('22', '3', '特色男装', '2', null), ('23', '3', '热卖品牌', '2', null), ('24', '3', 'T恤', '2', null), ('25', '3', '牛仔裤', '2', null), ('26', '3', '裤装', '2', null), ('27', '21', '西服', '3', 'images/goods.jpg'), ('28', '21', '风衣', '3', 'images/goods.jpg'), ('29', '21', '真皮皮衣', '3', 'images/goods.jpg'), ('30', '21', '西服套装', '3', 'images/goods.jpg'), ('31', '21', '羊毛衫', '3', 'images/goods.jpg'), ('32', '21', '羊绒衫', '3', 'images/goods.jpg'), ('33', '22', '大码男装', '3', 'images/goods.jpg'), ('34', '22', '中老年男装', '3', 'images/goods.jpg'), ('35', '22', '唐装/中山装', '3', 'images/goods.jpg'), ('36', '22', '工装', '3', 'images/goods.jpg'), ('37', '22', '沙滩裤', '3', 'images/goods.jpg'), ('38', '22', '皮裤', '3', 'images/goods.jpg'), ('39', '22', '棒球衫', '3', 'images/goods.jpg'), ('40', '1', '常用分类', '2', null), ('41', '1', '热门分类', '2', null), ('42', '40', '饮用水', '3', 'images/goods.jpg'), ('43', '40', '白酒', '3', 'images/goods.jpg'), ('44', '40', '雨刷', '3', 'images/goods.jpg'), ('45', '40', '项链', '3', 'images/goods.jpg'), ('46', '41', '手机', '3', 'images/goods.jpg'), ('47', '41', '笔记本', '3', 'images/goods.jpg'), ('48', '41', '空调', '3', 'images/goods.jpg'), ('49', '41', '收纳用品', '3', 'images/goods.jpg'), ('50', '41', '炒锅', '3', 'images/goods.jpg'), ('51', '41', '啤酒', '3', 'images/goods.jpg');
+INSERT INTO `sort` VALUES ('1', '0', '推荐分类', '1', null), ('2', '0', '潮流女装', '1', null), ('3', '0', '品牌男装', '1', null), ('4', '0', '家用电器', '1', null), ('5', '0', '电脑办公', '1', null), ('6', '0', '手机数码', '1', null), ('7', '0', '图书', '1', null), ('8', '0', '家居家纺', '1', null), ('9', '0', '食品生鲜', '1', null), ('10', '0', '酒水饮料', '1', null), ('11', '0', '运动户外', '1', null), ('12', '0', '奢侈箱包', '1', null), ('13', '0', '钟表珠宝', '1', null), ('14', '0', '玩具乐器', '1', null), ('15', '0', '汽车用品', '1', null), ('16', '0', '音像制品', '1', null), ('17', '2', '裙装', '2', null), ('18', '2', '上装', '2', null), ('19', '2', '下装', '2', null), ('20', '2', '特色类目', '2', null), ('21', '3', '上装', '2', null), ('22', '3', '特色男装', '2', null), ('23', '3', '热卖品牌', '2', null), ('24', '3', 'T恤', '2', null), ('25', '3', '牛仔裤', '2', null), ('26', '3', '裤装', '2', null), ('27', '21', '西服', '3', 'images/goods_sort/1.jpg'), ('28', '21', '风衣', '3', 'images/goods_sort/2.jpg'), ('29', '21', '真皮皮衣', '3', 'images/goods_sort/3.jpg'), ('30', '21', '西服套装', '3', 'images/goods_sort/4.jpg'), ('31', '21', '羊毛衫', '3', 'images/goods_sort/5.jpg'), ('32', '21', '羊绒衫', '3', 'images/goods_sort/6.jpg'), ('33', '22', '大码男装', '3', 'images/goods_sort/7.jpg'), ('34', '22', '中老年男装', '3', 'images/goods_sort/8.jpg'), ('35', '22', '唐装/中山装', '3', 'images/goods_sort/9.jpg'), ('36', '22', '工装', '3', 'images/goods_sort/10.jpg'), ('37', '22', '沙滩裤', '3', 'images/goods_sort/11.jpg'), ('38', '22', '皮裤', '3', 'images/goods_sort/12.jpg'), ('39', '22', '棒球衫', '3', 'images/goods_sort/3.jpg'), ('40', '1', '常用分类', '2', null), ('41', '1', '热门分类', '2', null), ('42', '40', '饮用水', '3', 'images/goods_sort/1.jpg'), ('43', '40', '白酒', '3', 'images/goods_sort/6.jpg'), ('44', '40', '雨刷', '3', 'images/goods_sort/3.jpg'), ('45', '40', '项链', '3', 'images/goods_sort/4.jpg'), ('46', '41', '手机', '3', 'images/goods_sort/13.jpg'), ('47', '41', '笔记本', '3', 'images/goods_sort/2.jpg'), ('48', '41', '空调', '3', 'images/goods_sort/7.jpg'), ('49', '41', '收纳用品', '3', 'images/goods_sort/8.jpg'), ('50', '41', '炒锅', '3', 'images/goods_sort/9.jpg'), ('51', '41', '啤酒', '3', 'images/goods_sort/10.jpg');
 COMMIT;
 
 -- ----------------------------
@@ -190,6 +217,91 @@ CREATE TABLE `special_goods` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `special_goods` VALUES ('1', '2', '10.00', '5', 'images/special_goods.jpg'), ('2', '1', '20.00', '3', 'images/special_goods.jpg'), ('3', '2', '10.00', '9', 'images/special_goods.jpg'), ('4', '2', '30.00', '3', 'images/special_goods.jpg'), ('5', '3', '100.00', '20', 'images/special_goods.jpg');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `user`
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL,
+  `phone` varchar(11) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `user`
+-- ----------------------------
+BEGIN;
+INSERT INTO `user` VALUES ('10', '123456', '13269107674', 'j8/C1+UfW1Aq0bInDoheKae7gd8=');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `user_child_order_table`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_child_order_table`;
+CREATE TABLE `user_child_order_table` (
+  `order_number` varchar(30) NOT NULL,
+  `order_child_number` varchar(30) NOT NULL,
+  `seller_id` int(10) NOT NULL,
+  `seller_name` varchar(10) NOT NULL,
+  `count` int(5) NOT NULL,
+  `total_money` float(5,2) NOT NULL,
+  `logistics_way` varchar(10) DEFAULT NULL,
+  `comment` varchar(50) DEFAULT NULL,
+  `order_status` int(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`order_child_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `user_child_order_table`
+-- ----------------------------
+BEGIN;
+INSERT INTO `user_child_order_table` VALUES ('160901011206787057', '160901011206648306', '1', 'haha', '4', '172.22', null, '测试', '1'), ('160901011206787057', '16090101120668609', '2', '安利旗舰店', '2', '200.00', null, '测试', '0'), ('160901013021483261', '160901013021236364', '2', '安利旗舰店', '2', '200.00', null, '12345', '1');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `user_order_goods`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_order_goods`;
+CREATE TABLE `user_order_goods` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `order_child_number` varchar(30) NOT NULL,
+  `goods_id` int(10) NOT NULL,
+  `goods_num` int(10) NOT NULL,
+  `goods_sort` varchar(20) DEFAULT NULL,
+  `goods_price` float(10,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `user_order_goods`
+-- ----------------------------
+BEGIN;
+INSERT INTO `user_order_goods` VALUES ('39', '160901011206648306', '3', '2', '金色', '50.00'), ('40', '160901011206648306', '3', '1', '蓝色', '50.00'), ('41', '160901011206648306', '1', '1', '蓝色', '22.22'), ('42', '16090101120668609', '2', '2', '金色', '100.00'), ('43', '160901013021236364', '2', '2', '金色', '100.00');
+COMMIT;
+
+-- ----------------------------
+--  Table structure for `user_order_table`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_order_table`;
+CREATE TABLE `user_order_table` (
+  `order_number` varchar(30) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `order_date` varchar(13) NOT NULL,
+  `count` int(5) NOT NULL,
+  `total_money` float(10,2) NOT NULL,
+  `order_address_id` int(10) NOT NULL,
+  PRIMARY KEY (`order_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+--  Records of `user_order_table`
+-- ----------------------------
+BEGIN;
+INSERT INTO `user_order_table` VALUES ('160901011206787057', '10', '1472663526479', '6', '372.22', '5'), ('160901013021483261', '10', '1472664621450', '2', '200.00', '5');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

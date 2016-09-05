@@ -1,6 +1,6 @@
 @charset "utf-8";
 *{ box-sizing:border-box;}
-body{color: #666; font: 400 14px/1.3 "Helvetica Neue",Helvetica,Arial,sans-serif,'\5b8b\4f53'}
+body{color: #333; font: 400 14px/1.3 "Helvetica Neue",Helvetica,Arial,sans-serif,'\5b8b\4f53'}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote，th,td{margin:0;padding:0;}
 a{text-decoration:none;}
 table{border-collapse:collapse;border-spacing:0;}
@@ -58,3 +58,5 @@ q:before, q:after{content:' ';}
 }
 .glyphicon-ok:before{content:"\e013";}
 .glyphicon-ok-circle:before{content:"\e089";}
+.glyphicon-remove-circle:before{content:"\e088";}
+.glyphicon-remove:before{content:"\e014";}

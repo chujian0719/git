@@ -35,51 +35,75 @@
 	<meta name="msapplication-tap-highlight" content="no">
 	<!-- 适应移动端end -->
 
-	<link href="css/phone.css" rel="stylesheet" />
+	<link href="/css/style.min.css" rel="stylesheet" />
+
+	<!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=CQo7ihGENzzw61FVBYobEVTb"></script>-->
 </head>
 <body>
+	<div id="start_animation">
+		<div class="container bg">
+			<div class="hometown">
+				<div class="heart"></div>
+				<div id="top">Made in</div>
+				<div class="city">moon</div>
+				<div id="bottom">With love</div>
+			</div>
+		</div>
+	</div>
 	<div id="wrapper"></div>
 	<div id="alert"></div>
 	<div id="loading"></div>
 </body>
 	<script>
-		var height = 0;
-		var fontNum = 0;
+		var height, fontNum;
 
 		(function() {
-			var width = document.documentElement.clientWidth;
-			height = document.documentElement.clientHeight;
-			fontNum = 100 * width / 750;
+			(function (doc, win) {
+				var docEl = doc.documentElement,
+						resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+						recalc = function () {
+							var width = document.documentElement.clientWidth;
+							height = docEl.clientHeight;
+
+							fontNum = 100 * width / 750;
+							docEl.style.fontSize = fontNum + 'px';
+						};
+
+				recalc();
+				if (!doc.addEventListener) return;
+				win.addEventListener(resizeEvt, recalc, false);
+				doc.addEventListener('DOMContentLoaded', recalc, false);
+			})(document, window);
 		})();
 	</script>
-	<!--<script src="public/base.js"></script>-->
 
-	<script src="src/util/zepto.min.js"></script>
-	<script src="src/util/zepto.fx.js"></script>
-	<script src="src/util/name_space.js"></script>
-	<script src="src/util/conf.js"></script>
-	<script src="src/util/api.js"></script>
-	<script src="src/util/util.js"></script>
+	<script src="/public/base.js"></script>
+
+	<!--<script src="src/util/zepto.min.js"></script>-->
+	<!--<script src="src/util/zepto.fx.js"></script>-->
+	<!--<script src="src/util/jquery.lettering.js"></script>-->
+	<!--<script src="src/util/name_space.js"></script>-->
+	<!--<script src="src/util/conf.js"></script>-->
+	<!--<script src="src/util/api.js"></script>-->
+	<!--<script src="src/util/get_init_info.js"></script>-->
+
+	<script>
+		$("#top").lettering();
+		$("#bottom").lettering();
+
+		window.onload = function() {
+			$('#start_animation').remove();
+		}
+
+	</script>
+
+	<!--<link href="/css/phone.css" rel="stylesheet" />-->
+	<link href="/css/phone.min.css" rel="stylesheet" />
+
 	<script>
 		var oScript = document.createElement('script');
-		oScript.src = 'public/app.js?_=' + (+new Date());
+		oScript.src = '/public/app.js?_=' + (+new Date());
 
 		document.getElementsByTagName('html')[0].appendChild(oScript);
-
-		(function (doc, win) {
-			var docEl = doc.documentElement,
-				resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-				recalc = function () {
-					var width = document.documentElement.clientWidth;
-					height = docEl.clientHeight;
-
-					fontNum = 100 * width / 750;
-					docEl.style.fontSize = fontNum + 'px';
-				};
-
-			if (!doc.addEventListener) return;
-			win.addEventListener(resizeEvt, recalc, false);
-			doc.addEventListener('DOMContentLoaded', recalc, false);
-		})(document, window);
 	</script>
 </html>

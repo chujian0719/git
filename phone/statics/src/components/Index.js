@@ -1,10 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import NavLink from './common/NavLink'
+
 import Loading from './Loading'
+import Util from './common/Util'
+import Header from './common/Header'
+
 import GoodsList from './GoodsList'
-import Header from './Header'
-import Footer from './Footer'
 
 import ReactIScroll from 'react-iscroll'
 var iScroll = require('iscroll');
@@ -14,11 +17,13 @@ var Slider = require('react-slick');
 const Item = React.createClass({
 	render() {
 		return (
-			<li className="clearfix" onClick={this.props.handle} data-id={this.props.data.id}>
-				<p>{this.props.data.name}</p>
-				<div className="img fl">
-					<img src={this.props.data.src} />
-				</div>
+			<li className="clearfix">
+				<NavLink to={`/goods_list/${this.props.data.id}`}>
+					<p>{this.props.data.name}</p>
+					<div className="img fl">
+						<img src={this.props.data.src} />
+					</div>
+				</NavLink>
 			</li>
 		)
 	}
@@ -28,18 +33,50 @@ const Index = React.createClass({
 	index: 1,
 	getInitialState: function () {
 		this.index = 1;
-		var storage = window.sessionStorage;
-		storage && storage.removeItem('cart');
 
-		this.index = 1;
 		return {
 			images: [],
 			notices: [],
 			goods: [],
-			list: []
+			list: [],
+			sort: [
+				{
+					image: 'images/index_sort_pay.png',
+					title: '充值中心'
+				},
+				{
+					image: 'images/index_sort_shop.png',
+					title: '超市'
+				},
+				{
+					image: 'images/index_sort_logistics.png',
+					title: '物流'
+				},
+				{
+					image: 'images/index_sort_focus.png',
+					title: '我的关注'
+				},
+				{
+					image: 'images/index_sort_ticket.png',
+					title: '领券'
+				},
+				{
+					image: 'images/index_sort_take.png',
+					title: '外卖'
+				},
+				{
+					image: 'images/index_sort_other.png',
+					title: '金融'
+				},
+				{
+					image: 'images/index_sort_sort.png',
+					title: '分类'
+				}
+			]
 		}
 	},
 	componentDidMount() {
+		this.props.changeFooterShowStatus();
 		Util.setHeight();
 
 		this.get_images();
@@ -91,7 +128,6 @@ const Index = React.createClass({
 	//获得分类列表
 	getSortList: function() {
 		var _this = this;
-
 		Util.ajax({
 			url: Api['get_sort_list'],
 			data: {
@@ -113,9 +149,7 @@ const Index = React.createClass({
 		var goods_list = ReactDOM.findDOMNode(this.refs.goods_list);
 
 		ReactDOM.render(<GoodsList pageUp={this.pageUp} id={obj.data('id')} />, goods_list);
-
 		$(goods_list).addClass('slide');
-		Util.setHeight();
 	},
 	pageUp: function(event) {
 
@@ -180,6 +214,9 @@ const Index = React.createClass({
 			}
 		})
 	},
+	sortClick: function(event) {
+		Util.stop(event);
+	},
 	render(){
 
 		var notices = [];
@@ -208,7 +245,7 @@ const Index = React.createClass({
 		}
 
 		return (
-			<div>
+			<div className="clear_scroll">
 				<div className="index" ref="index">
 					<Header />
 					<ReactIScroll iScroll={iScroll} className="scroll_height" options={this.props.optionsH}>
@@ -227,54 +264,18 @@ const Index = React.createClass({
 								</Slider>
 							</div>
 							<ul className="clearfix index_sort">
-								<li>
-									<span className="img">
-										<img src="images/index_sort_pay.png" />
-									</span>
-									<p>充值中心</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_shop.png" />
-									</span>
-									<p>超市</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_logistics.png" />
-									</span>
-									<p>物流</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_focus.png" />
-									</span>
-									<p>我的关注</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_ticket.png" />
-									</span>
-									<p>领券</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_take.png" />
-									</span>
-									<p>外卖</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_other.png" />
-									</span>
-									<p>金融</p>
-								</li>
-								<li>
-									<span className="img">
-										<img src="images/index_sort_sort.png" />
-									</span>
-									<p>分类</p>
-								</li>
+								{
+									this.state.sort.map((data, i) => {
+										return (
+											<li key={i} onClick={this.sortClick}>
+												<span className="img">
+													<img src={data.image} />
+												</span>
+												<p>{data.title}</p>
+											</li>
+										)
+									})
+								}
 							</ul>
 							<div className="index_notice clearfix">
 								<div className="fl in_title">
@@ -295,7 +296,9 @@ const Index = React.createClass({
 										<span>12</span>:
 										<span>12</span>
 									</span>
-									<span className="fr">更多秒杀</span>
+									<span className="fr">
+										<span className="fl">更多秒杀</span>
+									</span>
 								</div>
 								<ReactIScroll iScroll={iScroll} className="sg_content" options={this.props.optionsW}>
 									<ul className="clearfix" style={{width: 2.1 * this.state.goods.length + 'rem'}}>
@@ -321,7 +324,6 @@ const Index = React.createClass({
 										<div className="hot_list" key={data.id}>
 											<div className="hl_title">
 												<span className="title">{data.name}</span>
-												{/*<span className="fr">更多</span>*/}
 											</div>
 											<ul className="clearfix">
 												{
@@ -336,7 +338,6 @@ const Index = React.createClass({
 							}
 						</div>
 					</ReactIScroll>
-					<Footer />
 				</div>
 				<div ref="goods_list" className="common_wrp goods_list_wrp"></div>
 			</div>

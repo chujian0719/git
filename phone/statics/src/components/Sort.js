@@ -1,11 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+
+import NavLink from './common/NavLink'
 import GoodsList from './GoodsList'
-import Header from './Header'
-import Footer from './Footer'
+import Header from './common/Header'
+import Footer from './common/Footer'
 
 import ReactIScroll from 'react-iscroll'
 var iScroll = require('iscroll');
+
+import Util from './common/Util'
 
 const Sort1Item = React.createClass({
 	render() {
@@ -20,11 +24,13 @@ const Sort1Item = React.createClass({
 const Sort2Item = React.createClass({
 	render() {
 		return (
-			<li onClick={this.props.handle} data-id={this.props.data.id}>
-				<div className="img">
-					<img src={this.props.data.src} />
-				</div>
-				<p className="name">{this.props.data.name}</p>
+			<li>
+				<NavLink to={`/goods_list/${this.props.data.id}`}>
+					<div className="img">
+						<img src={Conf.IMG_PATH + this.props.data.src} />
+					</div>
+					<p className="name">{this.props.data.name}</p>
+				</NavLink>
 			</li>
 		)
 	}
@@ -38,14 +44,17 @@ export default React.createClass({
 		};
 	},
 	componentDidMount: function() {
+
+		this.props.changeFooterShowStatus();
+
 		this.getSortList(1);
 		this.getSortList(2);
 		Util.setHeight();
 	},
 	getSortList: function(type, id) {
-		var _this = this;
 
-		var storage = window.localStorage;
+		var _this = this,
+			storage = window.localStorage;
 
 		var sort = storage && storage.getItem('sort');
 
@@ -91,40 +100,36 @@ export default React.createClass({
 
 		this.refs.iScroll.withIScroll(function(iScroll) {
 
-			var y = top - iScroll.wrapperHeight/2 + 0.96 * fontNum /2;
+			var halfHeight = iScroll.wrapperHeight / 2 - 0.96  * fontNum / 2;
+			var y = top - halfHeight;
 
 			if(y < 0) {
-				if(-iScroll.y + 0.9 * fontNum < -y) {
+				if(top - iScroll.y <= halfHeight && iScroll.y >= 0) {
 					return false;
 				}
+				y = y < iScroll.y ? iScroll.y : y;
 			} else {
-				if(iScroll.y - iScroll.maxScrollY + 1 *fontNum< y){
+				var differ = iScroll.y - iScroll.maxScrollY;
+				if(differ == y){
 					return false;
 				}
+				y = differ < y ? differ : y;
 			}
 
 			iScroll.scrollBy(0,-y,500);
-		})
+		});
 
 		this.getSortList(2,id);
 		Util.stop(event);
 	},
-	getDefaultProps: function() {
-		return ({
-			options: {
-				mouseWheel: true,
-				click: true
-			}
-		})
-	},
 	lookList: function(event) {
+
 		var obj = $(event.currentTarget);
-		var goods_list = ReactDOM.findDOMNode(this.refs.goods_list);
+		Util.stop(event);
 
-		ReactDOM.render(<GoodsList pageUp={this.pageUp} id={obj.data('id')} />, goods_list);
-
-		$(goods_list).addClass('slide');
-		Util.setHeight();
+		//var goods_list = ReactDOM.findDOMNode(this.refs.goods_list);
+		//ReactDOM.render(<GoodsList pageUp={this.pageUp} id={obj.data('id')} />, goods_list);//
+        //$(goods_list).addClass('slide');
 	},
 	pageUp: function(event) {
 
@@ -136,9 +141,17 @@ export default React.createClass({
 
 		Util.stop(event);
 	},
+	getDefaultProps: function() {
+		return ({
+			options: {
+				mouseWheel: true,
+				click: true
+			}
+		})
+	},
 	render: function(){
 		return (
-			<div>
+			<div className="clear_scroll">
 				<div className="sort" ref="main">
 					<Header />
 					<div className="clearfix">
@@ -154,7 +167,7 @@ export default React.createClass({
 							</ReactIScroll>
 						</div>
 						<div className="fl sort2">
-							<ReactIScroll iScroll={iScroll} className="scroll_height" options={this.props.options}>
+							<ReactIScroll iScroll={iScroll} className="scroll_height" options={this.props.options} onScroll={this.onScroll}>
 								<div className="common_padding_top">
 									<div className="sort2_header">
 										<img src="images/sort_header.jpg" />
@@ -179,9 +192,8 @@ export default React.createClass({
 							</ReactIScroll>
 						</div>
 					</div>
-					<Footer />
 				</div>
-				<div ref="goods_list" className="goods_list_wrp"></div>
+				{/*<div ref="goods_list" className="goods_list_wrp"></div>*/}
 			</div>
 		)
 	}

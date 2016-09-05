@@ -1,9 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import Util from './common/Util'
+
 import AddressOperate from './AddressOperate'
-import Header from './Header'
-import Footer from './Footer'
+import Header from './common/Header'
+import Footer from './common/Footer'
 
 import ReactIScroll from 'react-iscroll'
 var iScroll = require('iscroll');
@@ -100,6 +102,7 @@ const List = React.createClass({
 		event && Util.stop(event);
 	},
 	render(){
+
 		return (
 			<div>
 				<div className="address_list">
@@ -108,6 +111,7 @@ const List = React.createClass({
 						<ul className="common_padding_top">
 							{
 								this.state.list.map(data => {
+
 									return <Item handle={this.chooseAddress} data={data} key={data.id} />
 								})
 							}

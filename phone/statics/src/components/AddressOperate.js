@@ -1,9 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import Util from './common/Util'
+
 import AddressOperate from './AddressOperate'
-import Header from './Header'
-import Footer from './Footer'
+import Header from './common/Header'
+import Footer from './common/Footer'
 
 import ReactIScroll from 'react-iscroll'
 var iScroll = require('iscroll');

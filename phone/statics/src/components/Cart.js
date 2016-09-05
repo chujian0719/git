@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import Util from './common/Util'
+
 import Detail from './Detail'
 import Clearing from './Clearing'
 
-import Header from './Header'
-import Footer from './Footer'
+import Header from './common/Header'
+import Footer from './common/Footer'
 
 import Loading from './Loading'
 
@@ -17,71 +19,100 @@ export default React.createClass({
 	getInitialState: function () {
 		return {
 			list: [],
-			cart_count: 0,
 			total: 0,
-			count: 0,
+			checked_count: 0,
 			all_checked: false
 		};
 	},
 	componentDidMount: function() {
+		this.props.changeFooterShowStatus();
+
 		this.getList();
 		Util.setHeight('clearing');
 	},
 	//获得购物车列表
 	getList: function() {
 		var _this = this;
-
 		Util.ajax({
 			url: Api['get_cart_list'],
 			success: function(data) {
-				data.data.map((item) => item.checked = false);
+
+				var saveStatus = {};
+				var lastList = _this.state.list;
+
+				if(lastList.length > 0) {
+					lastList.map(item => {
+						saveStatus[item.id] = item.checked;
+					});
+				}
+
+				data.data.map((item) => {
+					item.checked = saveStatus[item.id] || false;
+				});
+
 				_this.setState({
 					list: data.data
 				});
-				_this.editStorage(data.data);
+				_this.changeFooter(data.data);
 			},
 			error: function(data) {}
-		});
-	},
-	editStorage: function(list){
-		var storage = window.sessionStorage;
-		if(storage) {
-			storage.setItem('cart', JSON.stringify(list));
-		}
-	},
-	changeFooter: function(list) {
-		let total = 0;
-		let count = 0;
-		let checked_num = 0;
-
-		list.map((item) => {
-			if (item.checked) {
-				checked_num += 1;
-				total += item.count * item.price;
-				count += item.count;
-			}
-		});
-
-		this.setState({
-			all_checked: checked_num == list.length,
-			total: total,
-			count: count
 		});
 	},
 	//编辑购物车
 	editCart: function(data, callback) {
-		var _this = this;
-		var count = data.type == 'up' ? 1 : -1;
-
 		Util.ajax({
 			url: Api['edit_cart'],
 			data: data,
 			success: function(data) {
-				_this.setState({
-					count: _this.state.count + count
-				});
+				callback && callback(data);
 			},
 			error: function(data) {}
+		});
+	},
+	//改变 cart数量
+	editCartCount: function(count) {
+
+		if(this.props.count == count) {
+			return false;
+		}
+		this.props.cartEditCount(count);
+	},
+	//get cart数量
+	getCartCount: function() {
+		var _this = this;
+
+		Util.ajax({
+			url: Api['get_cart_count'],
+			success: function(data) {
+				_this.editCartCount(parseInt(data.data.count));
+			},
+			error: function(data) {}
+		});
+	},
+	//改变选中数量
+	changeFooter: function(list) {
+
+		let count = 0;
+		let total = 0;
+		let checked_num = 0;
+		let checked_count = 0;
+
+		list.map((item) => {
+			count = Util.floatAdd(count, item.count);
+
+			if (item.checked) {
+				checked_num += 1;
+				total =  Util.floatAdd(total, item.count * item.price);
+				checked_count =  Util.floatAdd(checked_count, item.count);
+			}
+		});
+
+		this.editCartCount(count);
+
+		this.setState({
+			checked_count: checked_count,
+			all_checked: checked_num == list.length,
+			total: total
 		});
 	},
 	edit: function(type,id) {
@@ -115,7 +146,6 @@ export default React.createClass({
 				type: type,
 				id: id
 			}, function() {
-				_this.editStorage(list);
 				_this.changeFooter(list);
 				_this.setState({
 					list: list
@@ -128,13 +158,19 @@ export default React.createClass({
 				item.checked = type == 'all_append';
 			});
 		} else if(type == 'delete') {
-			let index = 0;
-			list.map((item, i) => {
-				if(item.id == id) {
-					index = i;
-				}
+
+			Util.ajax({
+				url: Api['delete_cart'],
+				data: {
+					id: id
+				},
+				success: function(data) {
+					_this.getList();
+				},
+				error: function(data) {}
 			});
-			list.splice(index,1);
+
+			return false;
 		}
 		this.changeFooter(list);
 		this.setState({
@@ -142,11 +178,6 @@ export default React.createClass({
 		});
 	},
 	handle: function(event,data) {
-
-		if(typeof event != 'object') {
-			this[event == 'clearing' ? 'cartClearing' : 'pageUp'](data);
-			return false;
-		}
 
 		var obj = $(event.currentTarget);
 		var name = obj.data('name');
@@ -197,8 +228,22 @@ export default React.createClass({
 		}
 	},
 	//去结算
-	cartClearing(data) {
+	cartClearing(event) {
 		var _this = this;
+
+		if(this.state.checked_count == 0) {
+			return false;
+		}
+
+		var list = this.state.list,
+		data = {};
+
+		list.map(item => {
+			if(item.checked) {
+				data[item.id] = item.count;
+			}
+		});
+
 		var cart_clearing = ReactDOM.findDOMNode(this.refs.cart_clearing);
 
 		var oLoading = document.getElementById('loading');
@@ -206,17 +251,20 @@ export default React.createClass({
 
 		Util.ajax({
 			url: Api['go_clearing'],
-			data: data,
+			data: {
+				data: JSON.stringify(data)
+			},
 			success: function(data) {
 				ReactDOM.unmountComponentAtNode(oLoading);
 
-				ReactDOM.render(<Clearing pageUp={_this.pageUp} data={data.data} />, cart_clearing);
+				ReactDOM.render(<Clearing {...this.props} getCartCount={_this.getCartCount} pageUp={_this.pageUp} data={data.data} />, cart_clearing);
 				$(cart_clearing).addClass('slide');
 			},
 			error: function(data) {
 				ReactDOM.unmountComponentAtNode(oLoading);
 			}
 		});
+		Util.stop(event);
 	},
 	//返回上一级
 	pageUp: function(event) {
@@ -231,7 +279,7 @@ export default React.createClass({
 	},
 	render: function(){
 		return (
-			<div className="cart">
+			<div className="cart clear_scroll">
 				<Header type="cart" />
 				<ReactIScroll iScroll={iScroll} className="scroll_height" options={this.props.options}>
 					<ul className="cart_list">
@@ -245,11 +293,11 @@ export default React.createClass({
 													<span data-name="choose" data-id={data.id} onClick={this.handle} className={data.checked ? 'checkbox active' : 'checkbox'}></span>
 												</div>
 												<div className="img fl">
-													<img src="images/goods.jpg" />
+													<img src={data.thumb} />
 												</div>
 												<div className="fl info">
 													<p className="title">{data.title}</p>
-													<p className="belong_sort">颜色分类:{data.goods_sort}</p>
+													<p className="belong_sort">分类:{data.goods_sort}</p>
 													<div className="ticket">
 														<span className="c-red">¥{data.price}</span>
 														<div className="fr num">
@@ -270,7 +318,7 @@ export default React.createClass({
 						}
 					</ul>
 				</ReactIScroll>
-				<Footer handle={this.handle} state={this.state} type="cart" />
+				<Footer handle={this.handle} clearing={this.cartClearing} state={this.state} type="cart" />
 				<div ref="cart_clearing" className="cart_clearing"></div>
 			</div>
 		)

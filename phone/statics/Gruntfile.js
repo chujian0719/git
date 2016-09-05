@@ -8,10 +8,11 @@ module.exports = function (grunt) {
                     'public/base.js': [
                         'src/util/zepto.min.js',
                         'src/util/zepto.fx.js',
+                        'src/util/jquery.lettering.js',
                         'src/util/name_space.js',
                         'src/util/conf.js',
                         'src/util/api.js',
-                        'src/util/util.js'
+                        'src/util/get_init_info.js'
                     ]
                 }
             }
@@ -24,6 +25,9 @@ module.exports = function (grunt) {
                 files: {
                     'css/phone.min.css': [
                         "css/phone.css"
+                    ],
+                    'css/style.min.css': [
+                        "css/style.css"
                     ]
                 }
             }
