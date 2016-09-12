@@ -1,0 +1,98 @@
+ol, ul {
+  list-style: none; }
+
+ol, ul {
+  padding: 0; }
+
+.w-70 {
+  width: 70px; }
+
+.w-100p {
+  width: 100% !important; }
+
+.mb-5 {
+  margin-bottom: 5px; }
+
+.mr-10 {
+  margin-right: 10px; }
+
+.no_mg {
+  margin: 0; }
+
+.bc-common {
+  background-color: #19aa8d !important; }
+
+body.mini-navbar #header {
+  padding-left: 0; }
+  body.mini-navbar #header .navbar-brand {
+    width: 70px;
+    overflow: hidden; }
+
+body.body-small #header {
+  padding-left: 0; }
+  body.body-small #header .navbar-header {
+    display: none; }
+  body.body-small #header .navbar-brand {
+    width: 70px;
+    overflow: hidden; }
+  body.body-small #header .nav li {
+    display: inline-block; }
+  body.body-small #header .nav .nav-label {
+    display: none; }
+
+#header {
+  background-color: #19aa8d;
+  height: 50px;
+  padding-left: 100px; }
+  #header .navbar-header {
+    color: #fff;
+    text-align: center; }
+  #header .navbar-brand {
+    color: #fff; }
+  #header .nav > li {
+    z-index: 10000; }
+    #header .nav > li.open > a:hover, #header .nav > li.open > a:focus {
+      background-color: #FFF;
+      color: #19aa8d; }
+    #header .nav > li > a {
+      color: #FFF; }
+      #header .nav > li > a:focus, #header .nav > li > a:hover, .open > #header .nav > li > a {
+        background-color: #FFF;
+        color: #19aa8d;
+        height: 50px; }
+    #header .nav > li.active {
+      background-color: #fff;
+      border: medium none;
+      height: 50px; }
+      #header .nav > li.active > a {
+        color: #19aa8d; }
+        #header .nav > li.active > a:focus, #header .nav > li.active > a:active {
+          outline: none; }
+    #header .nav > li .nav-label {
+      display: inline; }
+
+.sidebar-collapse li.active .nav-second-level.collapse {
+  display: block; }
+
+.orderManage_list .order_list_table td {
+  vertical-align: middle; }
+.orderManage_list .order_list_table .order_item_info li {
+  float: left;
+  text-align: left;
+  width: 33%;
+  padding: 3px 0; }
+.orderManage_list .order_list_table .order_item_product {
+  width: 100%; }
+  .orderManage_list .order_list_table .order_item_product .image {
+    width: 100px;
+    height: 100px; }
+    .orderManage_list .order_list_table .order_item_product .image img {
+      width: 100%;
+      height: 100%; }
+
+.orderManage_list_edit .modal-dialog {
+  min-width: 700px !important; }
+  .orderManage_list_edit .modal-dialog .modal-body {
+    padding: 15px 30px 15px 15px; }
+
+/*# sourceMappingURL=add.css.map */

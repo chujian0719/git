@@ -1,0 +1,133 @@
+ol,ul{ list-style:none;}
+ol,ul{ padding: 0;}
+
+.w-70{ width: 70px;}
+.w-100p{ width: 100%!important;}
+.mb-5{ margin-bottom: 5px;}
+.mr-10{ margin-right: 10px;}
+
+.no_mg{ margin: 0;}
+.bc-common{ background-color: #19aa8d!important;}
+
+body.mini-navbar{
+  #header{
+    padding-left: 0;
+    .navbar-brand{
+      width: 70px;
+      overflow: hidden;
+    }
+  }
+  .sidebar-collapse{
+    li.active{
+      .nav-second-level.collapse{
+      }
+    }
+  }
+}
+body.body-small{
+  #header{
+    padding-left: 0;
+    .navbar-header{
+      display: none;
+    }
+    .navbar-brand{
+      width: 70px;
+      overflow: hidden;
+    }
+    .nav{
+      li{
+        display: inline-block;
+      }
+      .nav-label{
+        display: none;
+      }
+    }
+  }
+}
+#header {
+  background-color: #19aa8d;
+  height: 50px;
+  padding-left: 100px;
+  .navbar-header{
+    color: #fff;
+    text-align: center;
+  }
+  .navbar-brand {
+    color: #fff;
+  }
+  .nav > li{
+    z-index: 10000;
+    &.open > a{
+      &:hover,&:focus{
+        background-color: #FFF;
+        color: #19aa8d;
+      }
+    }
+    & > a{
+      color: #FFF;
+      &:focus,&:hover,.open > &{
+        background-color: #FFF;
+        color: #19aa8d;
+        height: 50px;
+      }
+    }
+    &.active{
+      background-color: #fff;
+      border: medium none;
+      height: 50px;
+      &>a{
+        color: #19aa8d;
+        &:focus,&:active{
+          outline:none;
+        }
+      }
+    }
+    .nav-label{
+      display: inline;
+    }
+  }
+}
+
+.sidebar-collapse{
+  li.active{
+    .nav-second-level.collapse{
+      display: block;
+    }
+  }
+}
+
+.orderManage_list{
+  .order_list_table{
+    td{
+      vertical-align: middle;
+    }
+    .order_item_info{
+      li{
+        float: left;
+        text-align: left;
+        width: 33%;
+        padding: 3px 0;
+      }
+    }
+    .order_item_product{
+      width: 100%;
+      .image{
+        width: 100px;
+        height: 100px;
+        img{
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+.orderManage_list_edit{
+  .modal-dialog{
+    min-width: 700px!important;
+    .modal-body{
+      padding: 15px 30px 15px 15px;
+    }
+  }
+}
